@@ -19,6 +19,7 @@ class ArcMarginProduct(nn.Module):
     """
 
     def __init__(self, in_features, out_features, s=30.0, m=0.50, easy_margin=False):
+        # m = 0.5 (paper recommend)
         super(ArcMarginProduct, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
@@ -30,8 +31,8 @@ class ArcMarginProduct(nn.Module):
         self.easy_margin = easy_margin  # False
         self.cos_m = math.cos(m)
         self.sin_m = math.sin(m)
-        self.th = math.cos(math.pi - m)  # Ngưỡng
-        self.mm = math.sin(math.pi - m) * m  # hằng số điều chỉnh
+        self.th = math.cos(math.pi - m)  # Ngưỡng  = -0.87758256189. m = 60 độ
+        self.mm = math.sin(math.pi - m) * m  # hằng số điều chỉnh = 0.239712769302
 
     def forward(self, input, label):
         # --------------------------- cos(theta) & phi(theta) ---------------------------
@@ -42,7 +43,7 @@ class ArcMarginProduct(nn.Module):
             phi = torch.where(cosine > 0, phi, cosine)
         else:
             # Next step
-            #  cosine > self.th <=> theta < pi - m <=> theta + m < pi (ok). !ok =>
+            #  cosine > self.th <=> theta < pi - m <=> theta + m < pi <=> theta <  120 (ok). !ok =>
             phi = torch.where(cosine > self.th, phi, cosine - self.mm)
         # --------------------------- convert label to one-hot ---------------------------
         # one_hot = torch.zeros(cosine.size(), requires_grad=True, device='cuda')
@@ -56,7 +57,5 @@ class ArcMarginProduct(nn.Module):
         output *= self.s
 
         # output : True_label: phi; False_label: cosin
-
-        # print(output)
 
         return output
