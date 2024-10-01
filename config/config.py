@@ -18,8 +18,8 @@ class Config(object):
     test_root = "/data1/Datasets/anti-spoofing/test/data_align_256"
     test_list = "test.txt"
 
-    lfw_root = "/data/Datasets/lfw/lfw-align-128"
-    lfw_test_list = "/data/Datasets/lfw/lfw_test_pair.txt"
+    lfw_root = "D:/Dataset/lfw-align-128"
+    lfw_test_list = "lfw_test_pair.txt"
 
     checkpoints_path = "checkpoints"
     load_model_path = "models/resnet18.pth"
